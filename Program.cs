@@ -1,25 +1,3 @@
-# DistributedFileStorage [![NuGet version](https://badge.fury.io/nu/DistributedFileStorage.svg)](http://badge.fury.io/nu/DistributedFileStorage)
-Distributed file storage
-
-
-## Features
-* Storing metadata in the database (SQL/NoSQL)
-* Storing files in the file system
-* Deduplication of files by content
-* Distributed storage (multiple disks)
-
-
-
-## Example: Simple console app
-```
-dotnet new console --name "DfsExample"
-cd DfsExample
-dotnet add package DistributedFileStorage.EntityFrameworkCore
-dotnet add package Microsoft.EntityFrameworkCore.SqlServer
-```
-
-program.cs:
-```C#
 using DistributedFileStorage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 // add services to the container
 var services = new ServiceCollection()
-    .AddDfsEfc<string>((sp, options) =>
+    .AddDfsEfc<string>(options =>
     {
         // add database provider 
         options.Database.ContextConfigurator = (db) => db.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DfsDatabase;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False");
@@ -53,7 +31,3 @@ Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(fileInfo));
 using var downloadFile = File.Create("example.txt");
 await foreach (var chunk in dfs.GetContent(fileId))
     await downloadFile.WriteAsync(chunk);
-```
-
-
-[More examples...](https://github.com/mustaddon/DistributedFileStorage/tree/main/Examples/)
